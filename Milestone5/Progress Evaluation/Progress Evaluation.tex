@@ -144,13 +144,15 @@ failure.
 \subsection{Development MTS Computer Progress}
 
 \tab We have been provided with the source repository for AMORE! We have cloned
-the repository onto the development MTS machine and tried to make it. When {\tt
-  make} was run in the root of the repository, it, of course, ran into some
-issues. A path variable was incorrectly configured in one of the internal make
-files, so we had to overwrite it so that it pointed to the correct
-directory. After that was fixed, it complained that it could not find a
-particular ROOT file that was not on the machine. Fortunately, however, the
-existing MTS has that file, so we copied it over, and it stopped
+the repository onto the development MTS machine and tried to make it. However,
+all documentation on AMORE states that this is not the recommended way of
+building AMORE, and so there is very little documentation on the process for
+building AMORE via its source. When {\tt make} was run in the root of the
+repository, it, of course, ran into some issues. A path variable was incorrectly
+configured in one of the internal make files, so we had to overwrite it so that
+it pointed to the correct directory. After that was fixed, it complained that it
+could not find a particular ROOT file that was not on the machine. Fortunately,
+however, the existing MTS has that file, so we copied it over, and it stopped
 complaining. Our next hurdle is figuring out how to deal with some type errors
 in yet another file.
 
@@ -227,7 +229,11 @@ only the data storage drives appeared.
 inability to repair its vital data collection hardware 
 
 \subsection{Development MTS Computer}
-
+	As it stands we are somewhat stuck with the development MTS. We may be able to 
+	find a way to create the makefile for the source of root, or we may need to 
+	find another method of building AMORE. As soon as AMORE is built, we will write
+	a script to pass data between AMORE, DATE, and ROOT to create an intuitive usage
+	process for the MTS.
 \tab 
 
 \subsection{Computing Cluster}
