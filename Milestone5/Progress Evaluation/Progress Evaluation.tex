@@ -135,16 +135,49 @@
 
 \subsection{Existing MTS Progress}
 
-\tab 
+\tab The existing MTS continues to suffer from its hardware ailments. While we
+were able to get new firmware for the FEC, it did not fix the FEC. Although the
+firmware was able to be installed onto the FEC, the FEC's ethernet port suddenly
+became inoperable. We do not know if this is a firmware error or a hardware
+failure.
 
 \subsection{Development MTS Computer Progress}
 
 \tab We have been provided with the source repository for AMORE! We have cloned
-the repository onto the development MTS machine and tried to make it. 
+the repository onto the development MTS machine and tried to make it. When {\tt
+  make} was run in the root of the repository, it, of course, ran into some
+issues. A path variable was incorrectly configured in one of the internal make
+files, so we had to overwrite it so that it pointed to the correct
+directory. After that was fixed, it complained that it could not find a
+particular ROOT file that was not on the machine. Fortunately, however, the
+existing MTS has that file, so we copied it over, and it stopped
+complaining. Our next hurdle is figuring out how to deal with some type errors
+in yet another file.
 
 \subsection{Computing Cluster}
 
-\tab 
+\tab The nodes have been integrated into the cluster! Turns out their boot order
+was messed up; the correct order is PXE network boot, CD, then HDD. With PXE
+networking booting enabled and set to the highest priority, the nodes will
+automatically listen for kickstart files from the CE on boot. This allowed the
+CE to send over all the files necessary to install ROCKS 7 and incorporate the
+nodes into the cluster! 
+
+\tab This victory is not without its pitfalls, however. A couple of the nodes
+were rather uncooperative, and it took us some time to get them sorted
+out. Additionally, we are unable to run all the nodes simultaneously due to
+issues with the UPSs powering the nodes; if seven nodes are turned on at the
+same time, the UPS's breaker is tripped and it shuts off. Until we can solve
+this problem, the nodes will be operated on in two groups of ten nodes each,
+five for each UPS.
+
+\tab Since the nodes have been brought into the cluster, we began trying to
+incorporate some other components; we started with NAS-0. There are {\tt
+  insert-ethers} options for NASs, so the process is very similar to that of the
+nodes. We modified NAS-0's boot order in the same manner as the nodes, and it
+successfully requested its kickstart file from the CE to begin the ROCKS 7
+installation. Unfortunately, NAS-0's OS drive was not seen by the installer;
+only the data storage drives appeared. 
 
 \subsection{GEM Machines}
 
@@ -154,7 +187,7 @@ the repository onto the development MTS machine and tried to make it.
 \subsection{Josef Bostik}
 
 \begin{itemize}
-\item 
+\item building AMORE on the MTS Development Machine
 \end{itemize}
 
 \subsection{Eric Pereira}
@@ -166,20 +199,32 @@ the repository onto the development MTS machine and tried to make it.
 \subsection{Ryan Wojtyla}
 
 \begin{itemize}
-\item 
+\item integrating cluster components
+\item building AMORE on the MTS Development Machine
 \end{itemize}
 
 \section{Task Matrix - Next Milestone}
 
 \begin{center}
-
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    Task & Josef & Eric & Ryan \\
+    \hline
+    Polish Cluster Documentation & 10\% & 10\% & 80\% \\
+    Polish MTS Documentation & 40\% & 20\% & 40\% \\
+    Create MTS Automation Script & 60\% & 10\% & 20\% \\
+    Integrate Remainder of Cluster Components & 10\% & 10\% & 80\% \\
+    Run Jobs on Cluster & 10\% & 10\% & 80\% \\
+    \hline
+  \end{tabular}
 \end{center}
 
 \section{Discussion - Next Milestone}
 
 \subsection{Existing MTS}
 
-\tab 
+\tab The future for the existing MTS looks to be quite grim. Our continuing
+inability to repair its vital data collection hardware 
 
 \subsection{Development MTS Computer}
 
