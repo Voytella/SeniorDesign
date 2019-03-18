@@ -81,7 +81,7 @@
 
 \begin{itemize}
 	\item Josef Bostik - \href{mailto:jbostik2015@my.fit.edu}{jbostik2015@my.fit.edu}
-	\item Eric Pereira - \href{mailto:epereira2015@my.fit.edu}{epereira2015@my.fit.edu }
+	\item Eric Pereira - \href{mailto:epereira2015@my.fit.edu}{epereira2015@my.fit.edu}
 	\item Ryan Wojtyla - \href{mailto:rwojtyla2015@my.fit.edu}{rwojtyla2015@my.fit.edu}
 \end{itemize}
 
@@ -183,7 +183,25 @@ only the data storage drives appeared.
 
 \subsection{GEM Machines}
 
-\tab 
+\tab The computers in the lab all seem to be suffering a major issue that was
+brought into light due to the failure of a hard drive in the Truth PC. There
+seemed to be something strange going on, the Truth PC was thought to be running
+in RAID 1, which means that with two hard drives if there was a hard drive failure it would not be catastrophic. However upon further investigation there
+seemed to be confusion as the BIOS stated that it was "RAID(1)" meaning that it 
+was RAID array 1, not RAID 1. The RAID supported on the motherboard of the 
+computer can only support RAID 0, which does not conserve storage but instead
+expands the two drives as only one recognized drive on the computer.
+
+\tab The GEM team seemed to be suffering from some issues with productivity, as
+they were running a program that would output a text file showing exactly how
+many hits a detector would make based on particle tracks. The problem is the
+team needed to gather all the hits of each different type (there are 5 types of
+possible hits a particle could do) and averages the amount of hits. They were
+doing this manually, due to their lack of knowledge of programming and the
+complexity of the text file (which was written very poorly, and quite difficult
+to work with) they were working with they figured doing it manually was best. 
+Creating a script improved productivity, and provided more accurate results. 
+
 \section{Parts Worked On}
 
 \subsection{Josef Bostik}
@@ -195,7 +213,8 @@ only the data storage drives appeared.
 \subsection{Eric Pereira}
 
 \begin{itemize}
-\item 
+\item building scripts for gem team
+\item finding effective backup solutions for GEM computers
 \end{itemize}
 
 \subsection{Ryan Wojtyla}
@@ -217,6 +236,8 @@ only the data storage drives appeared.
     Create MTS Automation Script & 60\% & 10\% & 20\% \\
     Integrate Remainder of Cluster Components & 10\% & 10\% & 80\% \\
     Run Jobs on Cluster & 10\% & 10\% & 80\% \\
+    Create GEM conputer Backups & 10\% & 80\% & 10\% \\
+    Assist Researchers & 10\% & 80\% & 10\% \\
     \hline
   \end{tabular}
 \end{center}
@@ -255,7 +276,18 @@ manual for performing future system updates.
 
 \subsection{GEM Machines}
 
-\tab 
+\tab The GEM Machines need more effective backups, it is known that their RAID
+systems are not effective. The plan is to get a large amount of drives and use
+a drive as an effective backup, loading the image of the current PC on the
+backup. This is a temporary solution, until we are able to utilize more
+storage on the cluster, or get RAID cards to use on these PC's. \\
+\tab It also seems that there are many more issues with productivity that the
+ GEM team is having, although the GEM team does not necessarily view them as
+ issues. The group has been conducting many tasks similarly to their previous
+ problems, manually looking through text files or running a sequence of programs
+ that take quite a while instead of running a script to conduct the same task
+ multiple times. In order to increase productivity more scripts need to be
+ written that will conduct the more menial tasks. 
 
 \section{Sponsor Feedback}
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/MacPorts 2017_3) (preloaded format=pdflatex 2018.5.11)  18 MAR 2019 13:14
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/MacPorts 2017_3) (preloaded format=pdflatex 2018.5.11)  18 MAR 2019 13:24
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -613,34 +613,34 @@ Overfull \hbox (74.8157pt too wide) in paragraph at lines 115--129
  [] 
  []
 
-[1] [2] [3] [4] [5] [6]
-Overfull \hbox (48.84213pt too wide) in paragraph at lines 282--283
+[1] [2] [3] [4] [5] [6] [7]
+Overfull \hbox (48.84213pt too wide) in paragraph at lines 314--315
 []   []
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 282--283
+Underfull \hbox (badness 10000) in paragraph at lines 314--315
 
  []
 
 
-Overfull \hbox (38.4032pt too wide) in paragraph at lines 285--294
+Overfull \hbox (38.4032pt too wide) in paragraph at lines 317--326
 [] 
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 295.
-[7]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 295.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 327.
+[8]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 327.
  (./Progress Evaluation.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 295.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 295.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 327.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 327.
 Package rerunfilecheck Info: File `"Progress Evaluation".out' has not changed.
 (rerunfilecheck)             Checksum: 8BE42BB6F16857B814F3A47BDBD6CA86;1782.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 295.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 327.
  ) 
 Here is how much of TeX's memory you used:
- 6805 strings out of 494936
- 97310 string characters out of 6180785
+ 6806 strings out of 494936
+ 97316 string characters out of 6180785
  181033 words of memory out of 5000000
  10035 multiletter control sequences out of 15000+600000
  8977 words of font info for 32 fonts, out of 8000000 for 9000
@@ -652,10 +652,10 @@ al/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/local/sha
 re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr17.pfb></opt/local/share/tex
 mf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></opt/local/share/texmf-te
 xlive/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on "Progress Evaluation.pdf" (10 pages, 84114 bytes).
+Output written on "Progress Evaluation.pdf" (11 pages, 87231 bytes).
 PDF statistics:
- 231 PDF objects out of 1000 (max. 8388607)
- 210 compressed objects within 3 object streams
- 38 named destinations out of 1000 (max. 500000)
+ 235 PDF objects out of 1000 (max. 8388607)
+ 213 compressed objects within 3 object streams
+ 39 named destinations out of 1000 (max. 500000)
  225 words of extra memory for PDF output out of 10000 (max. 10000000)
 
