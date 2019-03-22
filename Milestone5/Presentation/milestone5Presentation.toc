@@ -4,5 +4,6 @@
 \beamer@sectionintoc {4}{Muon Tomography Station}{5}{0}{4}
 \beamer@subsectionintoc {4}{1}{Existing MTS}{5}{0}{4}
 \beamer@subsectionintoc {4}{2}{Development MTS}{6}{0}{4}
-\beamer@sectionintoc {5}{Milestone 6 Goals}{7}{0}{5}
-\beamer@sectionintoc {6}{Questions}{8}{0}{6}
+\beamer@sectionintoc {5}{Documentation}{7}{0}{5}
+\beamer@sectionintoc {6}{Milestone 6 Goals}{8}{0}{6}
+\beamer@sectionintoc {7}{Questions}{9}{0}{7}
