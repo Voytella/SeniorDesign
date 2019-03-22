@@ -146,12 +146,13 @@
   \frametitle{Development MTS}
 
   \begin{itemize}
-    \item Attempted a reinstall of ROOT and AMORE to help solve issues
-    \item Reinstallation of ROOT solved ROOT problems
-    \item Tried to reinstall AMORE only to find that its repository has been
-      decommissioned and AMORE no longer supported
-    \item Fortunately, we are in communication with former lab member who has
-      access to the AMORE source on CERN's private GitHub
+    \item Attempted to build AMORE from source
+    \item Makefile 'Makefile.arch' was not found during build configuration, but we did
+          find the file in another directory, and made AMORE reliant on that Makefile
+          instead.
+    \item Build got further, but a few header files weren't found. The configuration seems to not know the proper location to find some           files.
+    \item Continued attempting to get the previous build of AMORE working, by
+    	  manually changing dependencies to our new version of root.
   \end{itemize}
 
   % maybe picture of email for fun
