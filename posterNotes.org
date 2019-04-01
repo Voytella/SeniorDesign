@@ -90,3 +90,6 @@ the group.
 *** helped perform miscellaneous cluster research and duties
 ** Daniel Campos: cluster consultant
 *** helped us overcome hurdles we had encountered
+** ROCKS User's Guide
+*** http://central-7-0-x86-64.rocksclusters.org/roll-documentation/base/7.0/
+*** provided guidance with the ROCKS installation process
