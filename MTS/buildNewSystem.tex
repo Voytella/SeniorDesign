@@ -75,9 +75,9 @@ contents of the mounted file system to the new directory, {\tt sudo rsync -a -t 
   -I srs\_centos7\_2.mount/ srs\_centos7\_2.rootfs}. Now that the mount point has
 been copied over, the original may be unmounted. 
 
-\qq Scratch that, we're just gonna put DATE on it. Stefano linked me to the CERN
-forum thread where he asked Brian Dorney for help to do exactly what we're
-trying to do. 
+\subsection{Installing DATE}
+
+\qq We were unable to install DATE on our machine using Stefano's image. We've moved on to try and install DATE manually. Stefano provided us with a link to the CERN forum thread where he asked Brian Dorney for help to do exactly what we're trying to do. 
 
 \qq The first thing we need to do is follow the setup instructions from
 \url{http://linux.web.cern.ch/linux/centos7/docs/install.shtml}. The first thing
@@ -172,6 +172,8 @@ completed, MySQL server must be installed, {\tt yum install
 but we can just erase this package, since we don't need it, {\tt yum erase
   mariadb-libs}. 
 
+\subsubsection{Setting up DATE's database}
+
 \qq The next step is to setup MySQL. First the service must be started, {\tt
   service mysql start}. Since the root account must be setup first, and the
 temporary root password is stored in root's home directory, we must switch to
@@ -194,6 +196,8 @@ will ask for the root password. When prompted, confirm that a minimal
 configuration is to be created; this is not the default setting. Also confirm
 that all detectors are to be added and that all trigger class masks ought to be
 added; these are not the default settings.
+
+\subsubsection{Running DATE}
 
 \qq With the base DATE configuration complete, the local configuration can
 begin. These next few steps must be completed as root ({\tt sudo su}). The path
@@ -235,6 +239,8 @@ each boot; this will be automated):\\
 {\tt infoBrowser}\\
 {\tt runControl/DAQCONTROL.sh}\\
 
+\subsection{Installing AMORE}
+
 \qq Now, it's time to install AMORE as root ({\tt sudo su}), {\tt yum install
   amore}. While all of the AMORE tools are installed, they are not part of the
 {\tt PATH} environment variable, so they cannot be run by basename on the normal
@@ -261,6 +267,8 @@ DATE again, including rebuilding the MySQL database.
 
 \qq We've come across our first issue: {\tt dateLocalConfig -s} is throwing some
 {\tt xinetd} errors.
+
+\subsubsection{Troubleshooting AMORE}
 
 \qq Another issue is that AMORE doesn't actually work. All of the commands
 exist, but trying to run {\tt amore} results in a error complaining about being
