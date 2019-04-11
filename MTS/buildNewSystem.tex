@@ -30,7 +30,9 @@ have to first ssh into NAS-1, then into the new computer.
 
 \qq One of the most important pieces of software we're going to need is ROOT. I
 installed the latest CentOS7 binary from root.cern.ch, and unpacked it. The
-CentOS7 binary may be used on SL7 because they are both closely related. 
+CentOS7 binary may be used on SL7 because they are both closely related.
+
+\qq To build root, we created a builddir in {\tt /opt/root}, moved into this directory, and used {\tt cmake ..} and {\tt cmake --build} setting the source with {\tt source /opt/root/builddir}. Root can now be run by running the command {\tt root} globally. Now, following the instructions in root's README, we configured root's library with {\tt ./configure linux664gcc}  
 
 \subsection{Installing Stefano's Image}
 
