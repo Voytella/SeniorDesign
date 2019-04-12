@@ -2,45 +2,87 @@
 
 \input{defaultPream}
 
+\usepackage{tcolorbox}
+\usepackage{minted}
+\usepackage[margin=0.59in]{geometry}
+
 \begin{document}
 
 %----------BEGIN TITLE----------
 
 \title{Construct a CentOS 7 Machine to Interface with a Muon Tomography Station}
 
+\date{\today}
+
+\thispagestyle{empty}
+
 \maketitle 
+
+\begin{center}
+  \includegraphics[width=0.9\textwidth]{mts.JPG}
+\end{center}
+
+
+\newpage
 
 %-----------END TITLE-----------
 
+\tableofcontents
+
+\newpage
 
 %----------BEGIN SETUP----------
 
-\section{Setup}
+\section{Background}
 
-\qq We've elected to create the brand new system on one of Stefano's new
-computers. That way, the current system is left untouched, and we are able to
-play around freely. The current system is running Scientific Linux 5, so we are
+\qq Florida Tech's High Energy Physics Lab operates a muon tomography station
+(MTS). The MTS uses micropattern gas detectors to track the flight of cosmic ray
+muons through the detector. The MTS consists of a small cavity surrounded
+entirely by detectors. Objects containing heavy elements may be placed in this
+cavity to be imaged by tracking deflections in the incident cosmic ray muons.
+
+\qq A computer is used to interface with the MTS in order to collect and process
+its data. Because the current machine has become antiquated, a new machine must
+be built.
+
+\section{Choose a New Computer}
+
+\qq A member of the research group had recently donated a large quantity of
+inexpensive machines, so one was adopted for purposes of MTS development. This
+was done not only to avoid occupying the MTS, but also to provide the ability to
+test freely.
+
+\section{Install an Operating System}
+
+\qq The current system is running Scientific Linux 5, so we are
 installing the latest Scientific Linux, SL7, on the new testing computer. 
 
 \qq SL7 has been cleanly installed, now to enable ssh. Turns out ssh is
-installed and turned on by default in SL7, but it is unreachable via the WiFi; I
-have to first ssh into NAS-1, then into the new computer.
+installed and turned on by default in SL7, but it is unreachable via the
+WiFi. The new machine can be reached, however, by using NAS-1 from the cluster
+as a bridge between personal machines and the development machine.
 
-\subsection{ROOT Installation}
+\section{ROOT}
 
-\qq One of the most important pieces of software we're going to need is ROOT. I
-installed the latest CentOS7 binary from root.cern.ch, and unpacked it. The
-CentOS7 binary may be used on SL7 because they are both closely related.
+\qq ROOT, a data analysis framework, is one of the key pieces of software
+required by the MTS's interfacing machine. The latest binary of ROOT is
+available from {\tt root.cern.ch} for CentOS 7. Since SL7 and CentOS 7 are
+closely related, however, the binary was downloaded for use.
 
-\qq To build ROOT, we created a builddir in {\tt /opt/root}, moved into this directory, and used {\tt cmake ..} and {\tt cmake --build} setting the source with {\tt source /opt/root/builddir}. Root can now be run by running the command {\tt root} globally. Now, following the instructions in ROOT's README, we configured root's library with {\tt ./configure linux664gcc}. Now ROOT should be properly built and configured.
+\qq To build ROOT, we created a build directory in {\tt /opt/root}, moved into
+this directory, and used {\tt cmake ..} and {\tt cmake --build} setting the
+source with {\tt source /opt/root/builddir}. ROOT can now be run by running the
+command {\tt root} globally. Now, following the instructions in ROOT's README,
+we configured root's library with {\tt ./configure linux664gcc}. Now ROOT should
+be properly built and configured.
 
-\subsection{Installing Stefano's Image}
+\section{Installing Stefano's Image}
 
-\qq Stefano created a disk image for us before he left with DATE and SCRIBE
-preinstalled and ready to go! It's at {\tt
-  /nas1/cmsgem/software/srs\_centos7\_2.vdi}. Unfortunately, it's a {\tt vdi} file
-rather than an {\tt iso}, so some conversions need to be done. I'm performing
-everything on the MTS development machine.
+\qq Stefano, the former lab member who left the spare computers, created a disk
+image for us before he left with DATE and SCRIBE preinstalled and ready to go!
+It's at {\tt /nas1/cmsgem/software/srs\_centos7\_2.vdi}. Unfortunately, it's a
+{\tt vdi} file rather than an {\tt iso}, so some conversions need to be
+done. I'm performing everything on the MTS development machine.
 
 \qq First we need to install some packages: {\tt qemu} and {\tt tklpatch}.
 Since {\tt vdi} files are VirtualBox images, we need to download VirtualBox to
@@ -54,32 +96,90 @@ get the conversion tools:
   \item {\tt yum install VirtualBox-5.1}
 \end{itemize}
 
-\qq Now that VirtualBox is installed, we can start converting! First, the {\tt
-  vdi} needs to be converted into a {\tt vmdk}, {\tt VBoxManage clonemedium
-  srs\_centos7\_2.vdi srs\_centos7\_2.vmdk --format VMDK}. Then, to a raw file, {\tt
-  gemu-img convert -f vmdk srs\_centos7\_2.vmdk -O raw srs\_centos7\_2.raw}. Next,
-the raw disk must be mounted as a loop device, but, since the image has multiple
-partitions, some extra steps must be performed. 
+\qq Now that VirtualBox is installed, we can start converting! 
 
-\qq Since the image has partitions, it must be specially prepared for mounting,
-{\tt loopdev=\$(sudo losetup --show -f srs\_centos7\_2.raw)}. The the command was
-assigned to a variable, because its output will be used more than once. The tool
-{\tt kpartx} needs to be installed, {\tt sudo yum install kpartx}, and used to
-add mappings to the image's partitions, {\tt sudo kpartx -a \$loopdev}. Now, the
-image is ready to be mounted. Create a mount point, {\tt mkdir
-  srs\_centos7\_2.mount}, and mount the image {\tt sudo mount
-  /dev/mapper/\$(basename \$loopdev)p1 srs\_centos7\_2.mount}. The image should be
-visible from {\tt df -h}, and accessible via the route specified by {\tt df}.
+\begin{tcolorbox}[title=Convert VDI to VMDK, colback=white, colframe=black,
+  coltitle=green]
+  \begin{minted}{bash}
+    VBoxManage clonemedium srs_centos7_2.vdi srs_centos7_2.vmdk --format VMDK
+  \end{minted}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title=Convert VMDK to Raw, colback=white, colframe=black,
+  coltitle=green]
+  \begin{minted}{bash}
+    gemu-img convert -f vmdk srs_centos7_2.vmdk -O raw srs_centos7_2.raw
+  \end{minted}
+\end{tcolorbox}
+
+Normally, this raw image would be able to be easily mounted, but this one has
+multiple partitions. Therefore, some extra steps need to be performed.
+
+\begin{tcolorbox}[title=Prepare Image for Mounting, colback=white,
+  colframe=black, coltitle=green]
+  \begin{minted}{bash}
+    loopdev=$(sudo losetup --show -f srs_centos7_2.raw)
+  \end{minted}
+\end{tcolorbox}
+
+The output of this particular command was saved because its output will be used
+later. Next, the tool {\tt kpartx} needs to be installed:
+
+\begin{minted}{bash}
+  sudo yum install kpartx
+\end{minted}
+
+\begin{tcolorbox}[title=Map the Image's Partitions, colback=white,
+  colframe=black, coltitle=green]
+  \begin{minted}{bash}
+    sudo kpartx -a $loopdev
+  \end{minted}
+\end{tcolorbox}
+
+Now the image is ready to be mounted! A mount point can be quickly created with
+
+\begin{minted}{bash}
+  mkdir srs_centos7_2.mount
+\end{minted}
+
+\begin{tcolorbox}[title=Mount Image, colback=white, colframe=black,
+  coltitle=green]
+  \begin{minted}{bash}
+    sudo mount /dev/mapper/$(basename $loopdev)p1 srs_centos7_2.mount
+  \end{minted}
+\end{tcolorbox}
+
+The mounted image ought to be visible from {\tt df -h} and accessible via the
+route specified by {\tt df}.
+
+%\qq Since the image has partitions, it must be specially prepared for mounting,
+%{\tt loopdev=\$(sudo losetup --show -f srs\_centos7\_2.raw)}. The the command was
+%assigned to a variable, because its output will be used more than once. The tool
+%{\tt kpartx} needs to be installed, {\tt sudo yum install kpartx}, and used to
+%add mappings to the image's partitions, {\tt sudo kpartx -a \$loopdev}. Now, the
+%image is ready to be mounted. Create a mount point, {\tt mkdir
+%  srs\_centos7\_2.mount}, and mount the image {\tt sudo mount
+%  /dev/mapper/\$(basename \$loopdev)p1 srs\_centos7\_2.mount}. The image should be
+%visible from {\tt df -h}, and accessible via the route specified by {\tt df}.
 
 \qq Now a copy may be made of the root file system of the image. Create a
 directory for the file system, {\tt mkdir srs\_centos7\_2.rootfs}, then copy the
-contents of the mounted file system to the new directory, {\tt sudo rsync -a -t -r -S
-  -I srs\_centos7\_2.mount/ srs\_centos7\_2.rootfs}. Now that the mount point has
-been copied over, the original may be unmounted. 
+contents of the mounted file system to the new directory: 
 
-\subsection{Installing DATE}
+\begin{minted}{bash}
+  sudo rsync -a -t -r -S -I srs_centos7_2.mount/ srs_centos7_2.rootfs
+\end{minted}
 
-\qq We were unable to install DATE on our machine using Stefano's image. We've moved on to try and install DATE manually. Stefano provided us with a link to the CERN forum thread where he asked Brian Dorney for help to do exactly what we're trying to do. 
+Now that the mount point has been copied over, the original may be unmounted.
+
+\section{Installing DATE}
+
+\qq We were unable to install DATE on our machine using Stefano's image. We've
+moved on to try and install DATE manually. Stefano provided us with a link to
+the CERN forum thread where he asked Brian Dorney for help to do exactly what
+we're trying to do.
+
+\subsection{Installing CERN Repositories}
 
 \qq The first thing we need to do is follow the setup instructions from
 \url{http://linux.web.cern.ch/linux/centos7/docs/install.shtml}. The first thing
@@ -126,7 +226,7 @@ repositories, {\tt yum-alice-daq.cc7\_64.repo} and {\tt
 from another computer, but the SLC6 repo was nowhere to be found. This problem
 was solved by creating the repo file myself by copying the CC7 file, and
 changing the URLs to point to where the SLC6 RPMs ought to be located. The
-contents of {\tt yum-alice-daq.cc7\_64.repo} is: \\
+contents of {\tt yum-alice-daq.cc7\_64.repo} are: \\
 {\tt [main]} \\
 {\tt [alice-daq-cc7]} \\
 {\tt name=ALICE DAQ software and dependencies - CC7/64/} \\
@@ -137,7 +237,7 @@ contents of {\tt yum-alice-daq.cc7\_64.repo} is: \\
 {\tt enabled=1} \\
 {\tt protect=1} \\
 {\tt gpgcheck=0} \\
-The contents of the newly created {\tt yum-alice-daq.slc6\_64.repo} is: \\
+The contents of the newly created {\tt yum-alice-daq.slc6\_64.repo} are: \\
 {\tt [main]} \\
 {\tt [alice-daq-slc6]} \\
 {\tt name=ALICE DAQ software and dependencies - slc6/64/} \\
@@ -152,6 +252,8 @@ The contents of the newly created {\tt yum-alice-daq.slc6\_64.repo} is: \\
 Running a quick {\tt sudo yum update} is helpful here, just double check to make
 sure you're not accidentally installing any SLC6 packages. 
 
+\subsection{Setting up DATE's Database}
+
 \qq Now to install a bunch of things from these repositories! The installation
 instructions from here,
 \url{https://alice-daq.web.cern.ch/products/date-installation-and-configuration}
@@ -161,22 +263,27 @@ were followed.
   postfix} produced some errors, but they are excusable. They appeared because
 those packages simply are not installed on our machine; the {\tt postfix} one,
 however, is. While simply {\tt rpm -e postfix} could have been executed with
-equal affect, it is safe to include the other three packages in case they
+equal effect, it is safe to include the other three packages in case they
 happened to have been mysteriously installed onto the system. 
 
 \qq The next command is {\tt rm -rf /var/lib/mysql/}, but that directory should
 not exist in the first place, since MySQL is not installed. Now, we must install
-a bunch of packages (including DATE!), {\tt sudo yum install BWidget
-  MySQL-shared MySQL-client MySQL-devel dim smi tcl-devel tk-devel curl-devel
-  libxml2-devel pciutils-devel mysqltcl xinetd ksh tcsh date}. With that
-completed, MySQL server must be installed, {\tt yum install
+a bunch of packages (including DATE!): 
+
+\begin{minted}{bash}
+  sudo yum install BWidget MySQL-shared MySQL-client MySQL-devel dim smi
+  tcl-devel tk-devel curl-devel libxml2-devel pciutils-devel mysqltcl xinetd ksh
+  tcsh date
+\end{minted}
+
+With that completed, MySQL server must be installed, {\tt yum install
   MySQL-server}. This time, a conflict with {\tt mariadb-libs} was encountered,
 but we can just erase this package, since we don't need it, {\tt yum erase
-  mariadb-libs}. 
+  mariadb-libs}.
 
-\subsubsection{Setting up DATE's database}
 
-\qq The next step is to setup MySQL. First the service must be started, {\tt
+
+\qq The next step is to setup MySQL. First, the service must be started, {\tt
   service mysql start}. Since the root account must be setup first, and the
 temporary root password is stored in root's home directory, we must switch to
 root to complete setting up the initial account, {\tt sudo su}. The temporary
@@ -185,7 +292,7 @@ paste it when prompted after running, as root, {\tt mysqladmin -u root -h
   localhost -p password}. 
 
 \qq Now that the root account has been created, the user accounts can be
-added. You may log out of root. First the {\tt DATE\_SITE} environment variable
+added. You may log out of root. First, the {\tt DATE\_SITE} environment variable
 must be cleared, {\tt unset DATE\_SITE}, then the date setup script must be
 executed, {\tt . /date/setup.sh}. Afterwards, the MySQL initialization script
 must be executed to configure the new database, {\tt newMysql.sh}. While the
@@ -193,33 +300,77 @@ settings may be changed to whatever best fits the situation, the defaults are
 sufficient.
 
 \qq Now that the MySQL database is initialized, it must be configured, for DATE,
-{\tt newDateSite.sh}. NOTE: To create the required {\tt /dateSite} directory, it
-will ask for the root password. When prompted, confirm that a minimal
-configuration is to be created; this is not the default setting. Also confirm
-that all detectors are to be added and that all trigger class masks ought to be
-added; these are not the default settings.
+{\tt newDateSite.sh}. 
 
-\subsubsection{Running DATE}
+\begin{tcolorbox}[title=NOTE, colback=white, colframe=blue]
+  To create the required {\tt /dateSite} directory, it
+  will ask for the root password. When prompted, confirm that a minimal
+  configuration is to be created; this is not the default setting. Also confirm
+  that all detectors are to be added and that all trigger class masks ought to be
+  added; these are not the default settings.
+\end{tcolorbox}
+
+\subsection{Running DATE}
 
 \qq With the base DATE configuration complete, the local configuration can
 begin. These next few steps must be completed as root ({\tt sudo su}). The path
-of the DATE\_SITE must be set, {\tt export DATE\_SITE=/dateSite}, the setup script
-must be executed, {\tt . /date/setup.sh}, and the local configuration command
-must be run, {\tt dateLocalConfig -s}.
+of the DATE\_SITE must be set:
+
+\begin{minted}{bash}
+  export DATE_SITE=/dateSite
+\end{minted}
+
+the setup script must be executed: 
+
+\begin{minted}{bash}
+  . /date/setup.sh
+\end{minted}
+
+and the local configuration command must be run: 
+
+\begin{minted}{bash}
+  dateLocalConfig -s
+\end{minted}
 
 \qq Running {\tt dateLocalConfig -s} will result in an error because, in
 CentOS7, {\tt iptables} has fallen away in favor of {\tt firewalld}. These
-instructions form StackOverflow,
-\url{https://stackoverflow.com/questions/24756240/how-can-i-use-iptables-on-centos-7}
+instructions from StackOverflow,
+\url{https://stackoverflow.com/questions/24756240/how-can-i-use-iptables-on-centos-7},
 describe how to switch back from {\tt firewalld} to {\tt iptables} so that DATE,
 built for SLC6, will be happy.
 
-\qq First, {\tt firewalld} needs to be stopped,{\tt systemctl stop firewalld},
-and hidden away, {\tt systemctl mask firewalld}. Next, {\tt iptables} must be
-installed, {\tt yum install iptables-services}, and enabled, {\tt systemctl
-  enable iptables} followed by {\tt systemctl start iptables}. Running {\tt
-  dateLocalConfig -s} will, again, produce an error, but running it again
-immediately will work, somehow.
+\qq First, {\tt firewalld} needs to be stopped,
+
+\begin{minted}{bash}
+  systemctl stop firewalld
+\end{minted}
+
+and hidden away, 
+
+\begin{minted}{bash}
+  systemctl mask firewalld
+\end{minted}
+
+Next, {\tt iptables} must be installed, 
+
+\begin{minted}{bash}
+  yum install iptables-services
+\end{minted}
+
+and enabled, 
+
+\begin{minted}{bash}
+  systemctl enable iptables
+\end{minted}
+
+followed by 
+
+\begin{minted}{bash}
+  systemctl start iptables
+\end{minted}
+
+Running {\tt dateLocalConfig -s} will, again, produce an error, but
+running it again immediately will work, somehow.
 
 \qq Next, the DIM (Distributed Information Management) name server must be
 launched (and must be launched after each boot; this will be automated), {\tt
@@ -241,7 +392,7 @@ each boot; this will be automated):\\
 {\tt infoBrowser}\\
 {\tt runControl/DAQCONTROL.sh}\\
 
-\subsection{Installing AMORE}
+\section{Installing AMORE}
 
 \qq Now, it's time to install AMORE as root ({\tt sudo su}), {\tt yum install
   amore}. While all of the AMORE tools are installed, they are not part of the
@@ -270,28 +421,45 @@ DATE again, including rebuilding the MySQL database.
 \qq We've come across our first issue: {\tt dateLocalConfig -s} is throwing some
 {\tt xinetd} errors.
 
-\subsubsection{Troubleshooting AMORE}
+\subsection{Troubleshooting AMORE}
 
 \qq Another issue is that AMORE doesn't actually work. All of the commands
-exist, but trying to run {\tt amore} results in a error complaining about being
+exist, but trying to run {\tt amore} results in an error complaining about being
 unable to load the shared library {\tt libCore.so.5.34}. Running a {\tt locate
   libCore.so} reveals that it's a ROOT library, but that only three versions of
 the file exists: {\tt /usr/lib64/root/libCore.so}, {\tt
-  /usr/lib64/root/libCore.so.6.14}, and {\tt
+  /usr/lib64/root/libCore.so.6.14}, and \\ {\tt
   /usr/lib64/root/libCore.so.6.14.04}. Huh, it doesn't look like we have the
 required file. The {\tt LD\_LIBRARY\_PATH} environment variable, however, does
 contain the appropriate paths of {\tt /opt/amore/lib} and {\tt
   /usr/lib64/root}. It looks like AMORE depends on ROOT 5 rather than ROOT 6, so
 we've got to downgrade ROOT.
 
-\qq To downgrade ROOT, the current version must be first uninstalled, {\tt sudo
-  yum remove root}. {\tt yum} will verify that ROOT 6 is to be removed, and it
+\subsubsection{Downgrade ROOT}
+
+\qq To downgrade ROOT, the current version must be first uninstalled: 
+
+\begin{minted}{bash}
+  sudo yum remove root
+\end{minted}
+
+ {\tt yum} will verify that ROOT 6 is to be removed, and it
 will warn that AMORE will no longer work, since it depends on ROOT. The
-available versions of ROOT can be checked with, {\tt yum --showduplicates list
-  root}. ROOT 6 is only in the EPEL repository, but ROOT 5 is in the {\tt
+available versions of ROOT can be checked with: 
+
+\begin{minted}{bash}
+  yum --showduplicates list root
+\end{minted}
+
+ ROOT 6 is only in the EPEL repository, but ROOT 5 is in the {\tt
   alice-daq-slc6} repository, so we're going to tell {\tt yum} to install ROOT
-only using the SLC6 repo, {\tt yum --disablerepo=* --enablerepo=alice-daq-slc6
-  install root}. {\tt yum} should report that it will install ROOT 5.
+only using the SLC6 repo: 
+
+\begin{minted}{bash}
+  yum --disablerepo=* --enablerepo=alice-daq-slc6 install root
+\end{minted}
+
+ {\tt yum} should report that it will install ROOT 5.
 
 \qq Since AMORE was removed when we removed ROOT, it must be reinstalled, {\tt
   yum install amore}. Now, when {\tt amore} is run, we get the same error, but
@@ -304,18 +472,20 @@ to set up AMORE as before.
 environment variable by adding the following to the {\tt ~/.bashrc}, {\tt export
   PATH=\$PATH:/opt/amore/bin}. Now, {\tt amoreMysqlSetup} can be run. 
 
-\qq ASIDE: It may complain that an {\tt AMORE} database already exists. That's fine, it
-can be removed by using MySQL. The MySQL prompt can be accessed with {\tt mysql
-  -u daq -p}, where the username and password are both {\tt daq} by
-default. Once at the prompt, the available databases can be listed with {\tt
-  show databases;}, the old AMORE database can be removed with {\tt drop
-  database AMORE;}, and the prompt can be exited with {\tt quit}.
-
+\begin{tcolorbox}[title=NOTE, colback=white, colframe=blue]
+  It may complain that an {\tt AMORE} database already exists. That's fine, it
+  can be removed by using MySQL. The MySQL prompt can be accessed with {\tt mysql
+    -u daq -p}, where the username and password are both {\tt daq} by
+  default. Once at the prompt, the available databases can be listed with {\tt
+    show databases;}, the old AMORE database can be removed with {\tt drop
+    database AMORE;}, and the prompt can be exited with {\tt quit}.
+\end{tcolorbox}
+  
 \qq The issue now is that {\tt amoreUpdateDB.tcl} is in the wrong place. It
-complains that {\tt /opt/amore/bin/amoreMysqlSetup} could not find {\tt
+complains that \\{\tt /opt/amore/bin/amoreMysqlSetup} could not find {\tt
   /bin/amoreUpdateDB.tcl}, which is fine because it's in {\tt
   /opt/amore/bin/amoreMysqlSetup}. In {\tt /opt/amore/bin/amoreMysqlSetup}, the
-path to {\tt amoreUpdateDB.tcl} is described as {\tt
+path to \\{\tt amoreUpdateDB.tcl} is described as {\tt
   \$AMORE/bin/amoreUpdateDB.tcl}. Since {\tt \$AMORE} is blank, I've run {\tt
   export AMORE=/opt/amore}. After dropping the old AMORE database from MySQL,
 {\tt amoreMysqlSetup} will run successfully.
@@ -324,27 +494,35 @@ path to {\tt amoreUpdateDB.tcl} is described as {\tt
 and rebuild it. The rebuild process was giving us some issues because it cannot
 be built in the installation directory; it needs to be first placed in the {\tt
   builddir} directory, then built. Now that ROOT is installed, AMORE may be set
-up again as normal with {\tt amoreMysqlSetup} and {\tt newAmoreSite} (NOTE: if
-not running {\tt newAmoreSite} as root, it must be run with {\tt sudo env
-  ``PATH=\$PATH'' newAmoreSite} in order for the environment to be properly
-preserved ({\tt sudo -E newAmoreSite} was ineffective)).
+up again as normal with {\tt amoreMysqlSetup} and {\tt newAmoreSite} 
+
+\begin{tcolorbox}[title=NOTE, colback=white, colframe=blue]
+  If {\tt newAmoreSite} is not begin run as root, it must be run with
+
+  \begin{minted}{bash}
+    sudo env "PATH=\$PATH" newAmoreSite
+  \end{minted}
+  
+  in order for the environment to be
+  properly preserved ({\tt sudo -E newAmoreSite} was ineffective).
+\end{tcolorbox}
 
 \qq When {\tt amore} is run, however, after several ROOT warnings about a bunch
 of classes already existing in {\tt TClassTable}, it says {\tt terminate called
   after throwing an instance of 'std::runtime\_error'}, then {\tt what()}, the
 AMORE function that is supposed to print out what caused an error, shows a
-``Usage'' dialogue for some command; it just prints out ``Usage:'' followed by
+"Usage" dialogue for some command; it just prints out "Usage:" followed by
 some flags. Evidently, the issue is that some command
 is not being executed as expected, or something isn't installed/configured
 properly.
 
-\qq Let's first try to find which command this ``Usage'' belongs to. I navigated
+\qq Let's first try to find which command this "Usage" belongs to. I navigated
 to {\tt /opt/amore} and grepped for a keyword in one of the flag definitions,
-{\tt grep -R ``<LIBSUFFIX>'' *}, and some binary files were matched, {\tt
+{\tt grep -R "<LIBSUFFIX>" *}, and some binary files were matched, {\tt
   lib/libAmoreCore.so} and {\tt lib/libAmoreDA.a}. To tell grep to treat the
-binary files as text files, the {\tt -a} flay may be used, {\tt grep -aR
-  ``<LIBSUFFIX>'' *}. Digging into those binaries didn't help a whole lot; I
-just found the ``Usage'' text on its own without any context.
+binary files as text files, the {\tt -a} flag may be used, {\tt grep -aR
+  "<LIBSUFFIX>" *}. Digging into those binaries didn't help a whole lot; I
+just found the "Usage" text on its own without any context.
 
 \qq Some progress has been made! Joseph has reinstalled a slightly newer version
 of ROOT, v5.34/38, and the strange ROOT errors from before are all gone! ROOT
@@ -405,7 +583,7 @@ rather than {\tt /usr/local}, so I'm gonna set the ``root-config'' prefix to
   root-config --config}.
 
 \qq Because {\tt root-config} wasn't cooperating when trying to change the
-prefix via {\tt root-config --prefix=/etc/root}, I found the source code, {\tt
+prefix via \\{\tt root-config --prefix=/etc/root}, I found the source code, {\tt
   /usr/local/bin/root-config}, and changed the prefix setting found in the {\tt
   configargs} variable. That alone, however, does not solve the problem; the
 configuration is not saved.
@@ -421,10 +599,13 @@ turn up anything.
 \qq The original MTS does, however, have {\tt
   /opt/amore/include/amore/TDATEEventParser.h}. I used {\tt netcat} to throw the
 MTS's file into the same directory on the MTS development machine and tried {\tt
-  make} again (NOTE: All TCP connections other than at port 22 are blocked by
-default, so {\tt iptables} must be used to free up a port). Now we have
-different errors in {\tt SRSPublisher.h}; they are all complaining that
-``Session'' does not have a type.
+  make} again. Now we have different errors in {\tt SRSPublisher.h}; they are
+all complaining that ``Session'' does not have a type.
+
+\begin{tcolorbox}[title=NOTE, colback=white, colframe=blue]
+  All TCP connections other than at port 22 are blocked by
+  default, so {\tt iptables} must be used to free up a port.
+\end{tcolorbox}
 
 %-----------END SETUP-----------
 
