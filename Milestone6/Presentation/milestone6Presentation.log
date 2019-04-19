@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/MacPorts 2017_3) (preloaded format=pdflatex 2018.5.11)  19 APR 2019 15:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/MacPorts 2017_3) (preloaded format=pdflatex 2018.5.11)  19 APR 2019 15:45
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1021,11 +1021,11 @@ Overfull \hbox (1.61507pt too wide) has occurred while \output is active
 \tf@snm=\write8
 \openout8 = `milestone6Presentation.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 208.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 208.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 212.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 212.
  (./milestone6Presentation.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 208.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 208.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 212.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 212.
 Package rerunfilecheck Info: File `milestone6Presentation.out' has not changed.
 
 (rerunfilecheck)             Checksum: 7FBB9ABF198AEF504A038941D475C302;471.
@@ -1042,7 +1042,7 @@ Here is how much of TeX's memory you used:
 pt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmss12.pfb></opt/lo
 cal/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmss17.pfb></opt/local/s
 hare/texmf-texlive/fonts/type1/public/amsfonts/cm/cmss8.pfb>
-Output written on milestone6Presentation.pdf (9 pages, 66804 bytes).
+Output written on milestone6Presentation.pdf (9 pages, 66715 bytes).
 PDF statistics:
  406 PDF objects out of 1000 (max. 8388607)
  376 compressed objects within 4 object streams
